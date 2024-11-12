@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ui_design_1/Screens/Opencamera.dart';
 import '../constraints.dart';
 import '../widgets/my_passwordfield.dart';
 import '../widgets/my_text_button.dart';
@@ -121,7 +122,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     SizedBox(height: 20),
                     MyTextButton(
                       buttonName: 'Register',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => CameraPage()));
+                      },
                       bgColor: Colors.white,
                       textColor: Colors.black87,
                     ),
