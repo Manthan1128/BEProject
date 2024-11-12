@@ -68,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget buildImage() => CircleAvatar(
         backgroundImage: AssetImage(
-          "assets/images/QR.jpg", // You can replace this with any other image you want to show
+          "assets/images/QR.jpg", 
         ),
         foregroundColor: Colors.transparent,
         backgroundColor: Colors.transparent,
