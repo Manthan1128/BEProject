@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:ui_design_1/Screens/HomePage.dart';
 import 'package:ui_design_1/Screens/register_page.dart';
 import 'package:ui_design_1/constraints.dart';
 

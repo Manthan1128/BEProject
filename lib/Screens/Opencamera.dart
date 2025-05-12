@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:ui_design_1/Screens/Result.dart';
 
 class CameraPage extends StatefulWidget {
   @override
@@ -113,25 +114,16 @@ class _CameraPageState extends State<CameraPage> {
             "Generate QR",
             style: TextStyle(fontSize: 17),
           ),
-          onPressed: () {},
+          onPressed: () {
+            if (imagePath != null) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ResultsPage(imagePath: imagePath!),
+                ),
+              );
+            }
+          },
         ),
       );
-}
-
-class DisplayPhotoPage extends StatelessWidget {
-  final File imagePath;
-  DisplayPhotoPage({required this.imagePath});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Captured Photo')),
-      body: Center(
-        child: Image.file(
-          imagePath, // Display captured image here
-          fit: BoxFit.cover,
-        ),
-      ),
-    );
-  }
 }

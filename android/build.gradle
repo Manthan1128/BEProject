@@ -16,3 +16,11 @@ subprojects {
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
+
+allprojects {
+    plugins.withId("org.jetbrains.kotlin.jvm") {
+        kotlin {
+            jvmToolchain(21)
+        }
+    }
+}
