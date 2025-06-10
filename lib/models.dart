@@ -1,53 +1,57 @@
-class OcrResponse {
-  final bool success;
-  final String? text;
-  final String? error;
+import 'dart:developer';
 
-  OcrResponse({
-    required this.success,
-    this.text,
+class MlModelResponse {
+  final String? recommendation;
+  final String? error;
+  final String? details;
+  final bool isSuccess;
+
+  MlModelResponse({
+    this.recommendation,
     this.error,
+    this.details,
+    required this.isSuccess,
   });
 
-  factory OcrResponse.fromJson(Map<String, dynamic> json) {
-    return OcrResponse(
-      success: json['success'] ?? false,
-      text: json['text'],
-      error: json['error'],
+  factory MlModelResponse.fromJson(Map<String, dynamic> json) {
+    // Check if the response contains an error
+    if (json.containsKey('error')) {
+      return MlModelResponse(
+        error: json['error'] as String?,
+        details: json['details'] as String?,
+        isSuccess: false,
+      );
+    }
+
+    // Success response with recommendation
+    if (json.containsKey('recommendation')) {
+      log("recommendation : " + json['recommendation'].toString());
+      return MlModelResponse(
+        recommendation: json['recommendation'] as String?,
+        isSuccess: true,
+      );
+    }
+    return MlModelResponse(isSuccess: false);
+  }
+
+  factory MlModelResponse.error(String errorMessage) {
+    return MlModelResponse(
+      error: errorMessage,
+      isSuccess: false,
     );
   }
 
-  factory OcrResponse.error(String message) {
-    return OcrResponse(
-      success: false,
-      error: message,
-    );
-  }
-}
-
-class LlmResponse {
-  final bool success;
-  final String? analysis;
-  final String? error;
-
-  LlmResponse({
-    required this.success,
-    this.analysis,
-    this.error,
-  });
-
-  factory LlmResponse.fromJson(Map<String, dynamic> json) {
-    return LlmResponse(
-      success: json['success'] ?? false,
-      analysis: json['analysis'],
-      error: json['error'],
-    );
+  Map<String, dynamic> toJson() {
+    return {
+      'recommendation': recommendation,
+      'error': error,
+      'details': details,
+      'isSuccess': isSuccess,
+    };
   }
 
-  factory LlmResponse.error(String message) {
-    return LlmResponse(
-      success: false,
-      error: message,
-    );
+  @override
+  String toString() {
+    return 'MlModelResponse(recommendation: $recommendation, error: $error, details: $details, isSuccess: $isSuccess)';
   }
 }

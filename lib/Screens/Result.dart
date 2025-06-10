@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import '../api_service.dart';
+import '../models.dart';
 
 class ResultsPage extends StatefulWidget {
   final File imagePath;
@@ -13,100 +15,123 @@ class ResultsPage extends StatefulWidget {
 
 class _ResultsPageState extends State<ResultsPage> {
   final ApiService _apiService = ApiService();
-  String? _ocrText;
-  String? _analysis;
+
+  MlModelResponse? _response;
   String? _error;
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    //_processImage();
-    timeout();
-  }
-
-  void dispose() {
-    super.dispose();
-  }
-
-  void timeout() {
-    Future.delayed(const Duration(seconds: 5), () {
-      setState(() {
-        _isLoading = false;
-      });
-    });
+    log('ResultsPage initialized with image: ${widget.imagePath.path}');
+    _processImage();
   }
 
   Future<void> _processImage() async {
     try {
-      // Perform OCR
-      final ocrResponse = await _apiService.performOCR(widget.imagePath.path);
-      if (!ocrResponse.success) {
-        throw Exception(ocrResponse.error);
-      }
+      log('Starting image processing...');
+      setState(() {
+        _isLoading = true;
+        _error = null;
+        _response = null;
+      });
 
-      _ocrText = ocrResponse.text;
-
-      // Perform LLM analysis
-      if (_ocrText != null) {
-        final llmResponse = await _apiService.performLLMAnalysis(_ocrText!);
-        if (!llmResponse.success) {
-          throw Exception(llmResponse.error);
-        }
-        _analysis = llmResponse.analysis;
-      }
+      final response =
+          await _apiService.analyzeAndRecommend(widget.imagePath.path);
+      log(response.toString());
+      
+      setState(() => _response = response);
     } catch (e) {
-      _error = e.toString();
+      log('Error in _processImage: $e');
+      setState(() => _error = e.toString());
     } finally {
       setState(() => _isLoading = false);
     }
   }
 
+  Widget _buildResultSection(String title, String content) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 6),
+        Text(content, style: const TextStyle(fontSize: 16)),
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Analysis Results'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: _processImage,
+          ),
+        ],
       ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: _isLoading
-              ? const CircularProgressIndicator()
+              ? const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(),
+                    SizedBox(height: 16),
+                    Text('Processing image...'),
+                  ],
+                )
               : _error != null
-                  ? Text(
-                      'Error: $_error',
-                      style: const TextStyle(color: Colors.red),
-                      textAlign: TextAlign.center,
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.error_outline,
+                            size: 64, color: Colors.red),
+                        const SizedBox(height: 16),
+                        Text('Error occurred:',
+                            style: Theme.of(context).textTheme.titleLarge),
+                        const SizedBox(height: 8),
+                        Text(_error!,
+                            style: const TextStyle(color: Colors.red),
+                            textAlign: TextAlign.center),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                            onPressed: _processImage,
+                            child: const Text('Retry')),
+                      ],
                     )
-                  : SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          Text(
-                            'Extracted Text:',
-                            style: Theme.of(context).textTheme.titleLarge,
+                  : _response != null
+                      ? SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 200,
+                                height: 200,
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.file(widget.imagePath,
+                                      fit: BoxFit.cover),
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              if (_response?.recommendation != null)
+                                _buildResultSection("Recommendation",
+                                    _response!.recommendation!),
+
+                              // Add other fields if available in the API response
+                            ],
                           ),
-                          const SizedBox(height: 10),
-                          Text(
-                            //_ocrText ?? 'No text extracted',
-                            'ABCDDD',
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 20),
-                          Text(
-                            'Analysis:',
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            //_analysis ?? 'No analysis available',
-                            'ajnjdjvbfjbjf',
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    ),
+                        )
+                      : const Text("No data available"),
         ),
       ),
     );

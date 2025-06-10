@@ -31,6 +31,8 @@ class _CameraPageState extends State<CameraPage> {
 
       setState(() {
         imagePath = File(image.path);
+
+        log(imagePath.toString());
       });
     } catch (e) {
       log(e.toString());
@@ -113,6 +115,7 @@ class _CameraPageState extends State<CameraPage> {
             ),
             onPressed: () {
               setImage();
+              log("Image path:  " + imagePath.toString());
             },
           ),
         ),
@@ -128,12 +131,16 @@ class _CameraPageState extends State<CameraPage> {
           ),
           onPressed: () {
             if (imagePath != null) {
+              log("Image path:  " + imagePath.toString());
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => ResultsPage(imagePath: imagePath!),
                 ),
               );
+            } else {
+              log("-else-----------------------Image path:  ------------------------" +
+                  imagePath.toString());
             }
           },
         ),
