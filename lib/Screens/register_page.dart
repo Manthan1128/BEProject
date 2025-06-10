@@ -19,51 +19,71 @@ class _RegisterPageState extends State<RegisterPage> {
   final _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
 
-  // Text Controllers
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController ageController = TextEditingController();
+  final TextEditingController bmiController = TextEditingController();
+  final TextEditingController goalsController = TextEditingController();
+  final TextEditingController conditionsController = TextEditingController();
+  final TextEditingController preferencesController = TextEditingController();
 
   Future<void> registerUser() async {
     try {
-      // Register in Firebase Auth
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
 
-      // Save in Firestore
       await _firestore.collection('users').doc(userCredential.user!.uid).set({
         'name': nameController.text.trim(),
         'email': emailController.text.trim(),
         'phone': phoneController.text.trim(),
+        'age': int.tryParse(ageController.text.trim()) ?? 0,
+        'BMI': double.tryParse(bmiController.text.trim()) ?? 0.0,
+        'goals': goalsController.text
+            .trim()
+            .split(',')
+            .map((e) => e.trim())
+            .toList(),
+        'conditions': conditionsController.text
+            .trim()
+            .split(',')
+            .map((e) => e.trim())
+            .toList(),
+        'preferences': preferencesController.text
+            .trim()
+            .split(',')
+            .map((e) => e.trim())
+            .toList(),
       });
 
-      // Navigate to camera page
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => CameraPage()),
       );
     } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(e.message ?? "Registration failed"),
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message ?? "Registration failed")),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    const backgroundColor = Color(0xFFDFF5E3); // light green
+    const primaryColor = Color(0xFF1B5E20); // dark green
+
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
-        backgroundColor: aBackgroundColor,
+        backgroundColor: backgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          icon: const Icon(Icons.arrow_back_ios, color: primaryColor),
+          onPressed: () => Navigator.pop(context),
         ),
       ),
       body: SafeArea(
@@ -75,28 +95,83 @@ class _RegisterPageState extends State<RegisterPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   children: [
+                    const SizedBox(height: 10),
+                    Center(
+                      child: Text(
+                        "NutriScan",
+                        style: TextStyle(
+                          fontSize: 45,
+                          fontWeight: FontWeight.bold,
+                          color: primaryColor,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 30),
                     Flexible(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Register", style: aHeadLine),
+                          Text("Register",
+                              style: aHeadLine.copyWith(color: primaryColor)),
                           Text("Create a new account to get started.",
-                              style: aBodyText2),
-                          SizedBox(height: 35),
+                              style: aBodyText2.copyWith(color: primaryColor)),
+                          const SizedBox(height: 35),
                           MyTextField(
                             hintText: 'Name',
                             inputType: TextInputType.name,
                             controller: nameController,
+                            borderColor: primaryColor,
+                            textColor: primaryColor,
                           ),
                           MyTextField(
                             hintText: 'Email',
                             inputType: TextInputType.emailAddress,
                             controller: emailController,
+                            borderColor: primaryColor,
+                            textColor: primaryColor,
                           ),
                           MyTextField(
                             hintText: 'Phone',
                             inputType: TextInputType.phone,
                             controller: phoneController,
+                            borderColor: primaryColor,
+                            textColor: primaryColor,
+                          ),
+                          MyTextField(
+                            hintText: 'Age',
+                            inputType: TextInputType.number,
+                            controller: ageController,
+                            borderColor: primaryColor,
+                            textColor: primaryColor,
+                          ),
+                          MyTextField(
+                            hintText: 'BMI',
+                            inputType:
+                                TextInputType.numberWithOptions(decimal: true),
+                            controller: bmiController,
+                            borderColor: primaryColor,
+                            textColor: primaryColor,
+                          ),
+                          MyTextField(
+                            hintText: 'Goals (comma separated)',
+                            inputType: TextInputType.text,
+                            controller: goalsController,
+                            borderColor: primaryColor,
+                            textColor: primaryColor,
+                          ),
+                          MyTextField(
+                            hintText: 'Conditions (comma separated)',
+                            inputType: TextInputType.text,
+                            controller: conditionsController,
+                            borderColor: primaryColor,
+                            textColor: primaryColor,
+                          ),
+                          MyTextField(
+                            hintText: 'Preferences (comma separated)',
+                            inputType: TextInputType.text,
+                            controller: preferencesController,
+                            borderColor: primaryColor,
+                            textColor: primaryColor,
                           ),
                           MyPasswordField(
                             controller: passwordController,
@@ -106,6 +181,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                 passwordVisibility = !passwordVisibility;
                               });
                             },
+                            borderColor: primaryColor,
+                            textColor: primaryColor,
+                            iconColor: primaryColor,
                           ),
                         ],
                       ),
@@ -113,7 +191,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("Already have an account? ", style: aBodyText),
+                        Text("Already have an account? ",
+                            style: aBodyText.copyWith(color: primaryColor)),
                         GestureDetector(
                           onTap: () {
                             Navigator.push(
@@ -125,7 +204,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           child: Text(
                             "Login",
                             style: aBodyText.copyWith(
-                              color: Colors.white,
+                              color: primaryColor,
                               fontWeight: FontWeight.bold,
                               decoration: TextDecoration.underline,
                             ),
@@ -133,14 +212,14 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     MyTextButton(
                       buttonName: 'Register',
                       onTap: registerUser,
-                      bgColor: Colors.white,
-                      textColor: Colors.black87,
+                      bgColor: primaryColor,
+                      textColor: Colors.white,
                     ),
-                    SizedBox(height: 40),
+                    const SizedBox(height: 40),
                   ],
                 ),
               ),

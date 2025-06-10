@@ -49,13 +49,17 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    const backgroundColor = Color(0xFFE8F5E9); // light green
+    const primaryColor = Color(0xFF1B5E20); // dark green
+
     return SafeArea(
       child: Scaffold(
+        backgroundColor: backgroundColor,
         appBar: AppBar(
-          backgroundColor: aBackgroundColor,
+          backgroundColor: backgroundColor,
           elevation: 0,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+            icon: Icon(Icons.arrow_back_ios, color: primaryColor),
             onPressed: () => Navigator.pop(context),
           ),
         ),
@@ -65,14 +69,28 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Login", style: aHeadLine),
+                Center(
+                  child: Text(
+                    "NutriScan",
+                    style: TextStyle(
+                      fontSize: 45,
+                      fontWeight: FontWeight.bold,
+                      color: primaryColor,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 30),
+                Text("Login",
+                    style: aHeadLine.copyWith(color: primaryColor)),
                 Text("Welcome back! Please login to continue.",
-                    style: aBodyText2),
+                    style: aBodyText2.copyWith(color: primaryColor)),
                 SizedBox(height: 35),
                 MyTextField(
                   hintText: 'Email',
                   inputType: TextInputType.emailAddress,
                   controller: emailController,
+                  borderColor: primaryColor,
+                  textColor: primaryColor,
                 ),
                 MyPasswordField(
                   controller: passwordController,
@@ -82,12 +100,16 @@ class _LoginPageState extends State<LoginPage> {
                       passwordVisibility = !passwordVisibility;
                     });
                   },
+                  borderColor: primaryColor,
+                  textColor: primaryColor,
+                  iconColor: primaryColor,
                 ),
                 SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Don't have an account? ", style: aBodyText),
+                    Text("Don't have an account? ",
+                        style: aBodyText.copyWith(color: primaryColor)),
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -99,7 +121,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: Text(
                         "Register",
                         style: aBodyText.copyWith(
-                          color: Colors.white,
+                          color: primaryColor,
                           fontWeight: FontWeight.bold,
                           decoration: TextDecoration.underline,
                         ),
@@ -111,8 +133,8 @@ class _LoginPageState extends State<LoginPage> {
                 MyTextButton(
                   buttonName: 'Login',
                   onTap: loginUser,
-                  bgColor: Colors.white,
-                  textColor: Colors.black87,
+                  bgColor: primaryColor,
+                  textColor: const Color.fromARGB(255, 247, 247, 249),
                 ),
                 SizedBox(height: 40),
               ],

@@ -6,7 +6,7 @@ class MyTextField extends StatelessWidget {
     super.key,
     required this.hintText,
     required this.inputType,
-    required this.controller,
+    required this.controller, required Color borderColor, required Color textColor,
   });
 
   final String hintText;
@@ -19,7 +19,7 @@ class MyTextField extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: TextField(
         controller: controller,
-        style: aBodyText.copyWith(color: Colors.white),
+        style: aBodyText.copyWith(color: Color(0xFF1B5E20)),
         keyboardType: inputType,
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
@@ -46,3 +46,4 @@ class MyTextField extends StatelessWidget {
     );
   }
 }
+

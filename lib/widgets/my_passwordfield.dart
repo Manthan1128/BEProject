@@ -7,7 +7,7 @@ class MyPasswordField extends StatelessWidget {
     Key? key,
     required this.isPasswordVisible,
     required this.onTap,
-    required this.controller,
+    required this.controller, required Color textColor, required Color borderColor, required Color iconColor,
   }) : super(key: key);
 
   final bool isPasswordVisible;
@@ -20,7 +20,7 @@ class MyPasswordField extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: TextField(
         controller: controller,
-        style: aBodyText.copyWith(color: Colors.white),
+        style: aBodyText.copyWith(color: Color(0xFF1B5E20)),
         obscureText: isPasswordVisible,
         keyboardType: TextInputType.text,
         textInputAction: TextInputAction.done,

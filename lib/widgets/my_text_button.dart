@@ -25,7 +25,7 @@ class MyTextButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(18),
         ),
         child: TextButton(
-          style: TextButton.styleFrom(overlayColor: Colors.black12),
+          style: TextButton.styleFrom(overlayColor: const Color.fromARGB(255, 245, 244, 244)),
           onPressed: onTap,
           child: Text(
             buttonName,

@@ -14,15 +14,8 @@ class CameraPage extends StatefulWidget {
 class _CameraPageState extends State<CameraPage> {
   File? imagePath;
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  final Color backgroundColor = Color(0xFFE8F5E9);
+  final Color primaryColor = Color(0xFF1B5E20);
 
   Future<void> setImage() async {
     try {
@@ -31,7 +24,6 @@ class _CameraPageState extends State<CameraPage> {
 
       setState(() {
         imagePath = File(image.path);
-
         log(imagePath.toString());
       });
     } catch (e) {
@@ -42,9 +34,12 @@ class _CameraPageState extends State<CameraPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: Text("Capture Photo"),
+        title: Text("Capture Photo", style: TextStyle(color: primaryColor)),
+        backgroundColor: backgroundColor,
+        elevation: 0,
+        iconTheme: IconThemeData(color: primaryColor),
         actions: [
           IconButton(
             icon: Icon(Icons.person),
@@ -57,37 +52,42 @@ class _CameraPageState extends State<CameraPage> {
           ),
         ],
       ),
-      body: Container(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                buildImage(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    buildCapturePhotoBtn(context),
-                    SizedBox(
-                      width: 25,
-                    ),
-                    buildGenerateQRBtn(context),
-                  ],
-                ),
-                SizedBox(height: 50),
-                if (imagePath != null) ...[
-                  Text('Captured Image'),
-                  SizedBox(height: 20),
-                  Container(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              buildImage(),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  buildCapturePhotoBtn(context),
+                  SizedBox(width: 25),
+                  buildGenerateQRBtn(context),
+                ],
+              ),
+              SizedBox(height: 50),
+              if (imagePath != null) ...[
+                Text('Captured Image',
+                    style: TextStyle(fontSize: 16, color: primaryColor)),
+                SizedBox(height: 20),
+                Container(
+                  width: double.infinity,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: primaryColor.withOpacity(0.3)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
                     child: Image.file(imagePath!, fit: BoxFit.cover),
-                    width: double.infinity,
-                    height: 200,
-                  )
-                ]
-              ],
-            ),
+                  ),
+                ),
+              ]
+            ],
           ),
         ),
       ),
@@ -95,9 +95,7 @@ class _CameraPageState extends State<CameraPage> {
   }
 
   Widget buildImage() => CircleAvatar(
-        backgroundImage: AssetImage(
-          "assets/images/QR.jpg", // You can replace this with any other image you want to show
-        ),
+        backgroundImage: AssetImage("assets/images/QR.jpg"),
         foregroundColor: Colors.transparent,
         backgroundColor: Colors.transparent,
         radius: 150,
@@ -105,13 +103,19 @@ class _CameraPageState extends State<CameraPage> {
 
   Widget buildCapturePhotoBtn(BuildContext context) => Hero(
         tag: "Capture Photo",
-        child: Container(
+        child: SizedBox(
           width: ((MediaQuery.of(context).size.width) / 2) - 45,
           height: 50,
           child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: primaryColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
             child: Text(
               "Capture Photo",
-              style: TextStyle(fontSize: 17),
+              style: TextStyle(fontSize: 17, color: Colors.white),
             ),
             onPressed: () {
               setImage();
@@ -121,13 +125,19 @@ class _CameraPageState extends State<CameraPage> {
         ),
       );
 
-  Widget buildGenerateQRBtn(BuildContext context) => Container(
+  Widget buildGenerateQRBtn(BuildContext context) => SizedBox(
         width: ((MediaQuery.of(context).size.width) / 2) - 45,
         height: 50,
         child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: primaryColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
           child: Text(
             "Generate QR",
-            style: TextStyle(fontSize: 17),
+            style: TextStyle(fontSize: 17, color: Colors.white),
           ),
           onPressed: () {
             if (imagePath != null) {
