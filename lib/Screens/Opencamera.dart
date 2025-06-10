@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:ui_design_1/Screens/Profile.dart';
 import 'package:ui_design_1/Screens/Result.dart';
 
 class CameraPage extends StatefulWidget {
@@ -42,6 +43,17 @@ class _CameraPageState extends State<CameraPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text("Capture Photo"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.person),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProfilePage()),
+              );
+            },
+          ),
+        ],
       ),
       body: Container(
         child: Padding(

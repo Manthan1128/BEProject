@@ -4,22 +4,23 @@ import '../constraints.dart';
 
 class MyPasswordField extends StatelessWidget {
   const MyPasswordField({
-    key,
+    Key? key,
     required this.isPasswordVisible,
     required this.onTap,
+    required this.controller,
   }) : super(key: key);
 
   final bool isPasswordVisible;
   final VoidCallback onTap;
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: TextField(
-        style: aBodyText.copyWith(
-          color: Colors.white,
-        ),
+        controller: controller,
+        style: aBodyText.copyWith(color: Colors.white),
         obscureText: isPasswordVisible,
         keyboardType: TextInputType.text,
         textInputAction: TextInputAction.done,
@@ -40,17 +41,11 @@ class MyPasswordField extends StatelessWidget {
           hintText: 'Password',
           hintStyle: aBodyText,
           enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.grey,
-              width: 1,
-            ),
+            borderSide: BorderSide(color: Colors.grey, width: 1),
             borderRadius: BorderRadius.circular(18),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.white,
-              width: 1,
-            ),
+            borderSide: BorderSide(color: Colors.white, width: 1),
             borderRadius: BorderRadius.circular(18),
           ),
         ),

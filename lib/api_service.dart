@@ -3,7 +3,7 @@ import './models.dart';
 
 class ApiService {
   final Dio _dio = Dio();
-  
+
   // Example API endpoints - replace with your actual endpoints
   final String ocrApiUrl = 'https://api.example.com/ocr';
   final String llmApiUrl = 'https://api.example.com/llm';
